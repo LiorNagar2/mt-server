@@ -25,7 +25,7 @@ export class LoggerInterceptor implements NestInterceptor {
         const requestId = request['requestId'];
         this.logger.log(
             `Request - ${method} - requestId: ${requestId} - ${url} - ${ip} ` +
-                JSON.stringify(anonymize(request.body )),
+                JSON.stringify(anonymize(request.body)),
             LoggerInterceptor.name
         );
 

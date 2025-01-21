@@ -5,7 +5,10 @@ export const anonymize = (data: { [key: string]: any }) => {
     }
 
     if (anonymized?.phoneNumber) {
-        anonymized.phoneNumber = anonymized.phoneNumber.replace(/\d{4}$/, '****');
+        anonymized.phoneNumber = anonymized.phoneNumber.replace(
+            /\d{4}$/,
+            '****'
+        );
     }
 
     if (anonymized?.password) {

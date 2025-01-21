@@ -6,12 +6,13 @@ import {
     ElasticsearchTransportOptions,
 } from 'winston-elasticsearch';
 import config from '../../config/config';
+import { Client } from '@elastic/elasticsearch';
 
 const elasticTransport = (indexPrefix) => {
     const esTransportOpts: ElasticsearchTransportOptions = {
         level: 'debug',
         indexPrefix,
-        indexSuffixPattern: 'YYYY-MM-DD',
+        //indexSuffixPattern: 'YYYY-MM-DD',
         transformer: (logData) => {
             const spanId = randomUUID();
             return {
@@ -27,7 +28,7 @@ const elasticTransport = (indexPrefix) => {
             };
         },
         clientOpts: {
-            node: 'http://elasticsearch:9200',
+            node: 'http://localhost:9200',
             maxRetries: 5,
             requestTimeout: 10000,
             sniffOnStart: false,
@@ -40,6 +41,22 @@ const elasticTransport = (indexPrefix) => {
     return esTransportOpts;
 };
 
+// Configure Elasticsearch client
+const esClient = new Client({
+    node: 'http://localhost:9200',
+    auth: {
+        username: config().elasticsearch.user,
+        password: config().elasticsearch.password,
+    },
+});
+
+// Configure Elasticsearch transport
+const esTransport = new ElasticsearchTransport({
+    level: 'info', // Log level
+    client: esClient,
+    indexPrefix: 'nestjs-logs',
+});
+
 export const winstonLogger = WinstonModule.createLogger({
     format: winston.format.json(),
     transports: [
@@ -51,6 +68,10 @@ export const winstonLogger = WinstonModule.createLogger({
                 utilities.format.nestLike()
             ),
         }),
-        //new ElasticsearchTransport(elasticTransport(`mt-server`)),
+        new ElasticsearchTransport(
+            elasticTransport(
+                `mt-server-logs-${process.env.NODE_ENV || 'local'}`
+            )
+        ),
     ],
 });

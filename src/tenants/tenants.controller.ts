@@ -41,7 +41,7 @@ export class TenantsController {
         try {
             return await this.tenantsService.findById(tenantId);
         } catch (e) {
-            throw new HttpException(e.response, e.statusCode);
+            throw new HttpException(e, HttpStatus.BAD_REQUEST);
         }
     }
 
