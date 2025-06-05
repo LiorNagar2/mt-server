@@ -102,5 +102,4 @@ Pull requests are welcome! For major changes, open an issue first to discuss you
 
 ## License
 
-This project is (add your preferred license here).  
-Copyright © 2025 (add your name or organization)
+MIT
