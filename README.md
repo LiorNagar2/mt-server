@@ -1,73 +1,106 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# mt-server
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+**mt-server** is a backend server application built with [NestJS](https://nestjs.com/) and TypeScript, designed for scalable multi-tenant SaaS (Software as a Service) solutions. It provides secure tenant, user, and product management with JWT-based authentication and MongoDB persistence.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+## Features
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **Multi-Tenancy**: Isolate data and logic for multiple organizations (“tenants”). Each tenant gets its own JWT secret for secure authentication.
+- **User Management**: Create, update, and manage users per tenant, with password hashing and tenant-aware authentication.
+- **Product Management**: Manage products in a tenant-isolated context (feature in progress).
+- **Authentication**: JWT-based authentication, scoped to each tenant.
+- **Modular Design**: Extensible NestJS module structure for easy maintenance and feature addition.
+- **Robust Logging**: Integrated request ID middleware and Winston logger with ElasticSearch transport for advanced observability and centralized logging.
+- **MongoDB Integration**: Uses Mongoose for schema-based, multi-tenant data storage.
 
-## Installation
+---
+
+## Logging
+
+The server uses a custom Winston logger (`winstonLogger.ts`) configured with:
+- **Console Transport**: For local development and debugging.
+- **ElasticSearch Transport**: For centralized log aggregation, search, and monitoring via ElasticSearch.
+
+This enables advanced monitoring and troubleshooting options for production deployments.
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v16+ recommended)
+- MongoDB (local or remote instance)
+- ElasticSearch instance (for log aggregation, optional but recommended for production)
+
+### Installation
 
 ```bash
-$ npm install
+npm install
 ```
+
+### Configuration
+
+Create a `.env` file in the root or set environment variables:
+
+- `MONGO_URI` – MongoDB connection string (example: `mongodb://localhost:27017/mt-server`)
+- `JWT_SECRET` – Secret key for JWT authentication
+- `SECURITY_ENCRYPTION_KEY` – Key for encrypting tenant JWT secrets
+- `ELASTICSEARCH_NODE` – ElasticSearch node URL (for logging, e.g. `http://localhost:9200`)
+
+More configuration options may be found in `src/config/config.ts`.
+
+---
 
 ## Running the app
 
 ```bash
-# development
-$ npm run start
+# Development
+npm run start:dev
 
-# watch mode
-$ npm run start:dev
+# Production
+npm run start:prod
 
-# production mode
-$ npm run start:prod
+# Run with hot-reload (watch mode)
+npm run start:dev
 ```
 
-## Test
+---
+
+## Testing
 
 ```bash
-# unit tests
-$ npm run test
+# Unit tests
+npm run test
 
-# e2e tests
-$ npm run test:e2e
+# E2E tests
+npm run test:e2e
 
-# test coverage
-$ npm run test:cov
+# Test coverage
+npm run test:cov
 ```
 
-## Support
+---
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## Project Structure
 
-## Stay in touch
+- `src/tenants/`: Tenant management (creation, isolation, JWT secret management)
+- `src/users/`: Per-tenant user management and authentication
+- `src/products/`: Tenant-specific product management (in progress)
+- `src/auth/`: Authentication logic
+- `src/services/logger/`: Winston logger (with ElasticSearch transport) and request tracing
+- `src/config/`: Centralized configuration
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+---
+
+## Contributing
+
+Pull requests are welcome! For major changes, open an issue first to discuss your proposal.
+
+---
 
 ## License
 
-Nest is [MIT licensed](LICENSE).
+This project is (add your preferred license here).  
+Copyright © 2025 (add your name or organization)
